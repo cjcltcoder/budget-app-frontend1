@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -33,6 +34,7 @@ const HomePage = () => {
         navigate('/dashboard');
       } else {
         console.error('Login failed:', data.message);
+        setErrorMessage('Email or password invalid'); // Set error message
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -53,6 +55,7 @@ const HomePage = () => {
           <input type="password" id="password" value={password} onChange={handlePasswordChange} />
         </div>
         <button type="submit">Login</button>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Display error message */}
       </form>
       <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
     </div>

@@ -44,6 +44,9 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
+      if (!newEmail.trim()) {
+        throw new Error('Please enter a new email');
+      }
       const response = await axios.patch(
         'http://localhost:5000/users/profile',
         { email: newEmail },
@@ -69,6 +72,9 @@ const ProfilePage = () => {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('Authentication failed: Token not found');
+      }
+      if (!newPassword.trim()) {
+        throw new Error('Please enter a new password');
       }
       const response = await axios.patch(
         'http://localhost:5000/users/profile',
@@ -129,7 +135,7 @@ const ProfilePage = () => {
       <input type="password" value={newPassword} onChange={handlePasswordChange} />
       <button onClick={handleUpdatePassword}>Update Password</button>
       <div>
-      <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
+        <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
       </div>
     </div>
   );
