@@ -45,6 +45,7 @@ const SignupPage = () => {
 
   return (
     <div>
+      <button onClick={() => window.location.href = '/'}>Go to Homepage</button>
       <h2>Signup</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
@@ -58,7 +59,6 @@ const SignupPage = () => {
         </div>
         <button type="submit">Sign up</button>
       </form>
-      <p><Link to="/">Back to Home Page</Link></p>
     </div>
   );
 };

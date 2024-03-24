@@ -108,9 +108,9 @@ const ProfilePage = () => {
   };
 
   if (redirect) {
-    // Perform redirection
-    window.location.href = '/dashboard'; // Redirect to dashboard
-    return null; // This is necessary to prevent further rendering of the component
+    // Redirect to homepage after deletion
+    window.location.href = '/'; // Change '/' to your actual homepage route if needed
+    return null; // Prevent further rendering
   }
 
   return (
@@ -128,8 +128,9 @@ const ProfilePage = () => {
       <br />
       <input type="password" value={newPassword} onChange={handlePasswordChange} />
       <button onClick={handleUpdatePassword}>Update Password</button>
-      <br />
+      <div>
       <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
+      </div>
     </div>
   );
 };
