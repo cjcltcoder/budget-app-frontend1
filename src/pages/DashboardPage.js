@@ -114,16 +114,23 @@ function Dashboard() {
     }
   };
   
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/'; // Redirect to HomePage
+  };
+
   return (
     <div>
+      <button onClick={() => window.location.href = '/profile'}>Go to Profile</button>
+      <button onClick={handleLogout}>Logout</button>
       <h1>Budget Categories</h1>
       {error && <p>Error: {error}</p>}
       <ul>
         {categories.map(category => (
           <li key={category._id}>
-            {category.category}: {category.budget}
-            <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
+            {category.category}: {category.budget} {' '}
             <button onClick={() => handleModifyCategory(category)}>Modify</button>
+            <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
           </li>
         ))}
       </ul>

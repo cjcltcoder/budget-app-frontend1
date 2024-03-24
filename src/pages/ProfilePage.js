@@ -89,6 +89,24 @@ const ProfilePage = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication failed: Token not found');
+      }
+      await axios.delete('http://localhost:5000/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // Optional: You can also clear local storage or perform any other actions here
+      setRedirect(true); // Redirect to another page after deletion
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   if (redirect) {
     // Perform redirection
     window.location.href = '/dashboard'; // Redirect to dashboard
@@ -97,6 +115,10 @@ const ProfilePage = () => {
 
   return (
     <div>
+      <div>
+        <button onClick={() => window.location.href = '/dashboard'}>Go to Dashboard</button> {/* Button to trigger redirection */}
+      </div>
+
       <h2>Profile Page</h2>
       {error && <p>Error: {error}</p>}
       {successMessage && <p>{successMessage}</p>}
@@ -106,10 +128,8 @@ const ProfilePage = () => {
       <br />
       <input type="password" value={newPassword} onChange={handlePasswordChange} />
       <button onClick={handleUpdatePassword}>Update Password</button>
-      <div>
-        <button onClick={() => setRedirect(true)}>Go back to dashboard</button> {/* Button to trigger redirection */}
-      </div>
-
+      <br />
+      <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
     </div>
   );
 };
