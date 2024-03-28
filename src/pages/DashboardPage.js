@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Doughnut } from 'react-chartjs-2';
 
 function Dashboard() {
   const [categories, setCategories] = useState([]);
-  const [income, setIncome] = useState(null); // New state for income
+  const [income, setIncome] = useState(null);
   const [newCategory, setNewCategory] = useState('');
   const [newBudget, setNewBudget] = useState('');
-  const [newIncome, setNewIncome] = useState(''); // State for new income
+  const [newIncome, setNewIncome] = useState('');
   const [updatedIncome, setUpdatedIncome] = useState('');
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [updatedCategory, setUpdatedCategory] = useState('');
   const [updatedBudget, setUpdatedBudget] = useState('');
   const [userId, setUserId] = useState('');
+  const [doughnutData, setDoughnutData] = useState({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+      },
+    ],
+  });
+
+  const chartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    width: 300,
+    height: 300,
+  };
 
   useEffect(() => {
     fetchCategories();
@@ -23,6 +42,46 @@ function Dashboard() {
       setUserId(decodedToken.userId);
     }
   }, []);
+
+  useEffect(() => {
+    updateDoughnutData();
+  }, [income, categories]);
+
+  const updateDoughnutData = () => {
+    const categoryLabels = categories.map((category) => category.category);
+    const categoryBudgets = categories.map((category) => category.budget);
+    const backgroundColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+    ];
+    const borderColors = [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)',
+    ];
+
+    const totalBudget = categoryBudgets.reduce((acc, curr) => acc + curr, 0);
+    const remainingIncome = income ? income.monthlyIncome - totalBudget : 0;
+
+    setDoughnutData({
+      labels: [...categoryLabels, 'Remaining Income'],
+      datasets: [
+        {
+          data: [...categoryBudgets, remainingIncome],
+          backgroundColor: [...backgroundColors, 'rgba(0, 255, 0, 0.2)'],
+          borderColor: [...borderColors, 'rgba(0, 255, 0, 1)'],
+          borderWidth: 1,
+        },
+      ],
+    });
+  };
 
     // Function to fetch income
     const fetchIncome = async () => {
@@ -253,6 +312,14 @@ function Dashboard() {
           <button onClick={handleUpdateCategory}>Update Category</button>
         </div>
       )}
+
+      {/* Doughnut Chart */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h2>Budget Distribution</h2>
+        <div style={{ height: '400px' }}> {/* Set a fixed height */}
+          <Doughnut data={doughnutData} options={chartOptions} />
+        </div>
+      </div>
     </div>
   );
 }
