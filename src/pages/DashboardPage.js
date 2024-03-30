@@ -31,6 +31,14 @@ function Dashboard() {
     responsive: true,
     width: 300,
     height: 300,
+    plugins: {
+      labels: {
+        render: 'label',
+        fontColor: '#000',
+        position: 'outside',
+        textMargin: 10,
+      },
+    },
   };
 
   useEffect(() => {
@@ -66,106 +74,105 @@ function Dashboard() {
       'rgba(153, 102, 255, 1)',
       'rgba(255, 159, 64, 1)',
     ];
-
+  
     const totalBudget = categoryBudgets.reduce((acc, curr) => acc + curr, 0);
-    const remainingIncome = income ? income.monthlyIncome - totalBudget : 0;
-
+  
     setDoughnutData({
-      labels: [...categoryLabels, 'Remaining Income'],
+      labels: categoryLabels,
       datasets: [
         {
-          data: [...categoryBudgets, remainingIncome],
-          backgroundColor: [...backgroundColors, 'rgba(0, 255, 0, 0.2)'],
-          borderColor: [...borderColors, 'rgba(0, 255, 0, 1)'],
+          data: categoryBudgets,
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
           borderWidth: 1,
         },
       ],
     });
   };
 
-    // Function to fetch income
-    const fetchIncome = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/income/money', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if (response.data.length > 0) {
-          setIncome(response.data[0]); // Set income state with fetched data
-        } else {
-          setIncome(null); // If no income data found, set income state to null
+  // Function to fetch income
+  const fetchIncome = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5000/income/money', {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('Error fetching income:', error);
-        setError('Failed to fetch income');
+      });
+      if (response.data.length > 0) {
+        setIncome(response.data[0]); // Set income state with fetched data
+      } else {
+        setIncome(null); // If no income data found, set income state to null
       }
-    };
-  
-    // Function to add new income
-    const handleAddIncome = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        await axios.post(
-          'http://localhost:5000/income',
-          {
-            monthlyIncome: newIncome,
-            userId: userId
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        fetchIncome(); // Fetch income again after adding new income
-        setNewIncome(''); // Clear the input field after adding income
-      } catch (error) {
-        console.error('Error adding income:', error);
-        setError('Failed to add income');
-      }
-    };
-    
-    // Function to update income
-    const handleUpdateIncome = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.put(
-          `http://localhost:5000/income/${income._id}`, // Include the income ID in the URL
-          {
-            monthlyIncome: updatedIncome,
-            userId: userId
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        setIncome(response.data); // Set income state with updated data
-        setUpdatedIncome(''); // Clear the input field after updating income
-      } catch (error) {
-        console.error('Error updating income:', error);
-        setError('Failed to update income');
-      }
-    };
-    
-    // Function to delete income
-    const handleDeleteIncome = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        await axios.delete('http://localhost:5000/income', {
+    } catch (error) {
+      console.error('Error fetching income:', error);
+      setError('Failed to fetch income');
+    }
+  };
+
+  // Function to add new income
+  const handleAddIncome = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:5000/income',
+        {
+          monthlyIncome: newIncome,
+          userId: userId
+        },
+        {
           headers: {
             Authorization: `Bearer ${token}`
           }
-        });
-        setIncome(null); // Set income state to null after deletion
-      } catch (error) {
-        console.error('Error deleting income:', error);
-        setError('Failed to delete income');
-      }
-    };
+        }
+      );
+      fetchIncome(); // Fetch income again after adding new income
+      setNewIncome(''); // Clear the input field after adding income
+    } catch (error) {
+      console.error('Error adding income:', error);
+      setError('Failed to add income');
+    }
+  };
+
+  // Function to update income
+  const handleUpdateIncome = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        `http://localhost:5000/income/${income._id}`, // Include the income ID in the URL
+        {
+          monthlyIncome: updatedIncome,
+          userId: userId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setIncome(response.data); // Set income state with updated data
+      setUpdatedIncome(''); // Clear the input field after updating income
+    } catch (error) {
+      console.error('Error updating income:', error);
+      setError('Failed to update income');
+    }
+  };
+
+  // Function to delete income
+  const handleDeleteIncome = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete('http://localhost:5000/income', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setIncome(null); // Set income state to null after deletion
+    } catch (error) {
+      console.error('Error deleting income:', error);
+      setError('Failed to delete income');
+    }
+  };
 
   const parseJwt = (token) => {
     const base64Url = token.split('.')[1];
@@ -260,7 +267,7 @@ function Dashboard() {
       setError('Failed to update category');
     }
   };
-  
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     window.location.href = '/'; // Redirect to HomePage
@@ -314,11 +321,16 @@ function Dashboard() {
       )}
 
       {/* Doughnut Chart */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h2>Budget Distribution</h2>
-        <div style={{ height: '400px' }}> {/* Set a fixed height */}
-          <Doughnut data={doughnutData} options={chartOptions} />
-        </div>
+      <div style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* Set a fixed height */}
+          <h2 style={{ marginBottom: '10px' }}>Budget Distribution</h2>
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Relative positioning for the donut chart */}
+            <Doughnut data={doughnutData} options={chartOptions} />
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', whiteSpace: 'pre-line' }}>
+              <span style={{ fontSize: '20px', color: (income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0) ? 'red' : 'inherit' }}>
+                {income ? `Remaining\nIncome: ${income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0)}` : 'Remaining\nIncome: 0'}
+              </span>
+            </div>
+          </div>
       </div>
     </div>
   );
