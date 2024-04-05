@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut, Bar } from 'react-chartjs-2';
 
 function Dashboard() {
   const [categories, setCategories] = useState([]);
@@ -26,20 +26,57 @@ function Dashboard() {
     ],
   });
 
+  const [barChartData, setBarChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Budget',
+        data: [],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      },
+    ],
+  });
+
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
     width: 300,
     height: 300,
+    indexAxis: 'y', // Set the axis to be used as the index to 'y' for horizontal bar chart
     plugins: {
-      labels: {
-        render: 'label',
-        fontColor: '#000',
-        position: 'outside',
-        textMargin: 10,
-      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = '';
+            const datasetLabel = context.dataset.label || '';
+            const value = context.dataset.data[context.dataIndex];
+            if (datasetLabel === 'Budget') {
+              label += `${value}`; // Display budget value
+            } else {
+              const monthlyIncome = income ? income.monthlyIncome : 0;
+              const percentage = ((value / monthlyIncome) * 100).toFixed(0);
+              label += `${percentage}% of Income`; // Display percentage of income
+            }
+            return label;
+          }
+        },
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Set tooltip background color
+        borderColor: '#fff', // Set tooltip border color
+        borderWidth: 1, // Set tooltip border width
+        titleFontColor: '#fff', // Set tooltip title font color
+        bodyFontColor: '#fff', // Set tooltip body font color
+      }
+    },
+    labels: {
+      render: 'label',
+      fontColor: '#000',
+      position: 'outside',
+      textMargin: 10,
     },
   };
+  
 
   useEffect(() => {
     fetchCategories();
@@ -52,42 +89,75 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    updateDoughnutData();
+    updateChartData();
   }, [income, categories]);
 
-  const updateDoughnutData = () => {
+  const updateChartData = () => {
     const categoryLabels = categories.map((category) => category.category);
     const categoryBudgets = categories.map((category) => category.budget);
-    const backgroundColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(255, 159, 64, 0.2)',
-    ];
-    const borderColors = [
-      'rgba(255, 99, 132, 1)',
-      'rgba(54, 162, 235, 1)',
-      'rgba(255, 206, 86, 1)',
-      'rgba(75, 192, 192, 1)',
-      'rgba(153, 102, 255, 1)',
-      'rgba(255, 159, 64, 1)',
-    ];
-  
-    const totalBudget = categoryBudgets.reduce((acc, curr) => acc + curr, 0);
-  
+
     setDoughnutData({
       labels: categoryLabels,
       datasets: [
         {
           data: categoryBudgets,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+          ],
           borderWidth: 1,
         },
       ],
     });
+
+    const monthlyIncome = income ? income.monthlyIncome : 0;
+    const budgetPercentages = categoryBudgets.map(budget => ((budget / monthlyIncome) * 100).toFixed(0));
+
+      // Sort categoryLabels and categoryBudgets based on budget values
+      const sortedData = categoryLabels.map((label, index) => ({
+        label,
+        budget: categoryBudgets[index]
+      })).sort((a, b) => b.budget - a.budget);
+
+      const sortedLabels = sortedData.map(item => item.label);
+      const sortedBudgets = sortedData.map(item => item.budget);
+
+    // Modify the bar chart data to be horizontal
+    setBarChartData({
+      labels: sortedLabels,
+      datasets: [
+        {
+          label: 'Budget',
+          data: sortedBudgets, // Swap data with labels
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.2)', // Color for category 1
+            'rgba(255, 99, 132, 0.2)',  // Color for category 2
+            'rgba(75, 192, 192, 0.2)',  // Color for category 3
+            // Add more colors as needed for additional categories
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)', // Border color for category 1
+            'rgba(255, 99, 132, 1)',  // Border color for category 2
+            'rgba(75, 192, 192, 1)',  // Border color for category 3
+            // Add more colors as needed for additional categories
+          ],
+          borderWidth: 1,
+        },
+      ],
+    });
+
   };
 
   // Function to fetch income
@@ -321,9 +391,9 @@ function Dashboard() {
       )}
 
       {/* Doughnut Chart */}
-      <div style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* Set a fixed height */}
+      <div style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h2 style={{ marginBottom: '10px' }}>Budget Distribution</h2>
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Relative positioning for the donut chart */}
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <Doughnut data={doughnutData} options={chartOptions} />
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', whiteSpace: 'pre-line' }}>
               <span style={{ fontSize: '20px', color: (income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0) ? 'red' : 'inherit' }}>
@@ -331,6 +401,12 @@ function Dashboard() {
               </span>
             </div>
           </div>
+      </div>
+
+      {/* Horizontal Bar Chart */}
+      <div style={{ marginTop: '20px', height: '400px', width: '80%', margin: 'auto', alignItems: 'center' }}>
+        <h2>Budget Distribution (Bar Chart)</h2>
+        <Bar data={barChartData} options={chartOptions} />
       </div>
     </div>
   );
