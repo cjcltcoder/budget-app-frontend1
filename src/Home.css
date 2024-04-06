@@ -1,0 +1,19 @@
+.login-container {
+    border: 1px solid #ccc; /* Add border */
+    width: 50%; /* Adjust width as needed */
+    margin: 0 auto; /* Center horizontally */
+    padding: 20px; /* Add padding for spacing */
+    text-align: center; /* Center text */
+  }
+  
+  .login-container h2 {
+    margin-bottom: 10px; /* Add space below heading */
+  }
+  
+  .login-container form {
+    margin-top: 20px; /* Add space between heading and form */
+  }
+  
+  .login-container .error-message {
+    color: red; /* Style error message */
+  }

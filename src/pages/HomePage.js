@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import '../Home.css';
 
 const HomePage = () => {
   const [email, setEmail] = useState('');
@@ -42,23 +43,23 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <h2>Welcome to the Budget App</h2>
-      <p>Please sign up or log in to continue.</p>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="email">Email: </label>
-          <input type="email" id="email" value={email} onChange={handleEmailChange} />
-        </div>
-        <div>
-          <label htmlFor="password">Password: </label>
-          <input type="password" id="password" value={password} onChange={handlePasswordChange} />
-        </div>
-        <button type="submit">Login</button>
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Display error message */}
-      </form>
-      <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
-    </div>
+      <div className="login-container">
+        <h1>Welcome to the Budget App</h1>
+        <p>Please sign up or log in to continue.</p>
+        <form onSubmit={handleLogin}>
+          <div>
+            <label htmlFor="email">Email: </label>
+            <input type="email" id="email" value={email} onChange={handleEmailChange} />
+          </div>
+          <div>
+            <label htmlFor="password">Password: </label>
+            <input type="password" id="password" value={password} onChange={handlePasswordChange} />
+          </div>
+          <button type="submit">Login</button>
+          {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Display error message */}
+        </form>
+        <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
+      </div>
   );
 };
 

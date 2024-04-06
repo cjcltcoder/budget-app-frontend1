@@ -1,0 +1,32 @@
+.signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .signup-container {
+    border: 1px solid #ccc; /* Add border */
+    width: 50%; /* Adjust width as needed */
+    margin-top: 20px; /* Add space between button and form */
+    padding: 20px; /* Add padding for spacing */
+    text-align: center; /* Center text */
+  }
+  
+  .signup-container h2 {
+    margin-bottom: 10px; /* Add space below heading */
+  }
+  
+  .signup-container form {
+    margin-top: 20px; /* Add space between heading and form */
+  }
+  
+  .signup-container button {
+    margin-top: 20px; /* Add space above button */
+  }
+  
+  .go-to-home {
+    align-self: flex-start; /* Align button to the left */
+    margin-left: 0px; /* Add left margin for spacing */
+  }
+  

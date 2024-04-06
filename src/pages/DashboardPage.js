@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Doughnut, Bar } from 'react-chartjs-2';
+import '../Dashboard.css';
+import '../Chart.css';
 
 function Dashboard() {
   const [categories, setCategories] = useState([]);
@@ -350,64 +352,78 @@ function Dashboard() {
         <button onClick={handleLogout}>Logout</button>
       </div>
 
-      <div>
-        <h1>Income</h1>
-        <ul>
-          {income && (
-            <li key={income._id}> 
-              Monthly Income: {income.monthlyIncome} {' '}
-              <button onClick={handleDeleteIncome}>Delete</button>
-            </li>
-          )}
-        </ul>
-        <h2>Add New Income</h2>
-        <input type="number" value={newIncome} onChange={e => setNewIncome(e.target.value)} placeholder="Monthly Income" />
-        <button onClick={handleAddIncome}>Add Income</button>
-      </div>
-
-      <h1>Budget Categories</h1>
-      {error && <p>Error: {error}</p>}
-      <ul>
-        {categories.map(category => (
-          <li key={category._id}>
-            {category.category}: {category.budget} {' '}
-            <button onClick={() => handleModifyCategory(category)}>Modify</button>
-            <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-      <h2>Add New Category</h2>
-      <input type="text" value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Category Name" />
-      <input type="number" value={newBudget} onChange={e => setNewBudget(e.target.value)} placeholder="Budget Amount" />
-      <button onClick={handleAddCategory}>Add Category</button>
-
-      {selectedCategory && (
-        <div>
-          <h2>Update Category</h2>
-          <input type="text" value={updatedCategory} onChange={e => setUpdatedCategory(e.target.value)} placeholder="Category Name" />
-          <input type="number" value={updatedBudget} onChange={e => setUpdatedBudget(e.target.value)} placeholder="Budget Amount" />
-          <button onClick={handleUpdateCategory}>Update Category</button>
-        </div>
+      <h1 className="title">Budget Management</h1> {/* New h1 title */}
+      <div className="container">
+  {/* Income Section */}
+  <div className="section">
+    <h2>Income</h2>
+    <ul>
+      {income && (
+        <li key={income._id}> 
+          Monthly Income: {income.monthlyIncome} {' '}
+          <button onClick={handleDeleteIncome}>Delete</button>
+        </li>
       )}
+    </ul>
+    <h2>Add New Income</h2>
+    <input type="number" value={newIncome} onChange={e => setNewIncome(e.target.value)} placeholder="Monthly Income" />
+    <button onClick={handleAddIncome}>Add Income</button>
+  </div>
+
+  {/* Budget Categories Section */}
+  <div className="section">
+    <h2>Budget Categories</h2>
+    {error && <p>Error: {error}</p>}
+    <ul>
+      {categories.map(category => (
+        <li key={category._id}>
+          {category.category}: {category.budget} {' '}
+          <button onClick={() => handleModifyCategory(category)}>Modify</button>
+          <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+    <h2>Add New Category</h2>
+    <input type="text" value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Category Name" />
+    <input type="number" value={newBudget} onChange={e => setNewBudget(e.target.value)} placeholder="Budget Amount" />
+    <button onClick={handleAddCategory}>Add Category</button>
+
+    {selectedCategory && (
+      <div>
+        <h2>Update Category</h2>
+        <input type="text" value={updatedCategory} onChange={e => setUpdatedCategory(e.target.value)} placeholder="Category Name" />
+        <input type="number" value={updatedBudget} onChange={e => setUpdatedBudget(e.target.value)} placeholder="Budget Amount" />
+        <button onClick={handleUpdateCategory}>Update Category</button>
+      </div>
+    )}
+  </div>
+</div>
 
       {/* Doughnut Chart */}
-      <div style={{ position: 'relative', height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ marginBottom: '10px' }}>Budget Distribution</h2>
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div className="chart-container">
+          <h2 className="chart-title">Budget Distribution</h2>
+          <div className="chart-wrapper">
             <Doughnut data={doughnutData} options={chartOptions} />
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', whiteSpace: 'pre-line' }}>
-              <span style={{ fontSize: '20px', color: (income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0) ? 'red' : 'inherit' }}>
+            <div className="chart-center-text">
+              <span style={{ fontSize: '20px', color: income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0 ? 'red' : 'inherit' }}>
                 {income ? `Remaining\nIncome: ${income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0)}` : 'Remaining\nIncome: 0'}
               </span>
             </div>
           </div>
       </div>
 
-      {/* Horizontal Bar Chart */}
-      <div style={{ marginTop: '20px', height: '400px', width: '80%', margin: 'auto', alignItems: 'center' }}>
-        <h2>Budget Distribution (Bar Chart)</h2>
-        <Bar data={barChartData} options={chartOptions} />
-      </div>
+        {/* Horizontal Bar Chart */}
+        <div className="chart-container">
+            <h2 className="chart-title">Budget Distribution (Bar Chart)</h2>
+            <div className="chart-wrapper">
+              <Bar data={barChartData} options={chartOptions} />
+              <div className="chart-center-text">
+                <span className="chart-remaining-income">
+                  {/* Content to be displayed */}
+                </span>
+              </div>
+            </div>
+        </div>
     </div>
   );
 }
