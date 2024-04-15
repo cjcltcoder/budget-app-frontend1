@@ -373,7 +373,7 @@ function Dashboard() {
   {/* Budget Categories Section */}
   <div className="section">
     <h2>Budget Categories</h2>
-    {error && <p>Error: {error}</p>}
+    {/* {error && <p>Error: {error}</p>} */}
     <ul>
       {categories.map(category => (
         <li key={category._id}>
