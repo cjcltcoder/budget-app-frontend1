@@ -20,7 +20,7 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
-      const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
+      const url = `https://budget-app-backend1.onrender.com/users/profile`;
       console.log('Fetching user profile from:', url); // Log the URL being used
       const response = await axios.get(url, {
         headers: {
