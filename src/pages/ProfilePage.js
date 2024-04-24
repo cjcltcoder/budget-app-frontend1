@@ -11,25 +11,25 @@ const ProfilePage = () => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('Authentication failed: Token not found');
-        }
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setEmail(response.data.email);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-
     fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication failed: Token not found');
+      }
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setEmail(response.data.email);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   const handleEmailChange = (event) => {
     setNewEmail(event.target.value);
@@ -41,28 +41,13 @@ const ProfilePage = () => {
 
   const handleUpdateEmail = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Authentication failed: Token not found');
-      }
       if (!newEmail.trim()) {
         throw new Error('Please enter a new email');
       }
-      const response = await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
-        { email: newEmail },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await updateProfile({ email: newEmail });
       setEmail(newEmail);
       setNewEmail('');
       setSuccessMessage('Email updated successfully');
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000);
     } catch (error) {
       setError(error.message);
     }
@@ -70,33 +55,48 @@ const ProfilePage = () => {
 
   const handleUpdatePassword = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Authentication failed: Token not found');
-      }
       if (!newPassword.trim()) {
         throw new Error('Please enter a new password');
       }
-      const response = await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
-        { password: newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await updateProfile({ password: newPassword });
       setNewPassword('');
       setSuccessMessage('Password updated successfully');
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000);
     } catch (error) {
       setError(error.message);
     }
   };
 
   const handleDeleteUser = async () => {
+    try {
+      await deleteProfile();
+      setRedirect(true);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const updateProfile = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication failed: Token not found');
+      }
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const deleteProfile = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -107,23 +107,20 @@ const ProfilePage = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      // Optional: You can also clear local storage or perform any other actions here
-      setRedirect(true); // Redirect to another page after deletion
     } catch (error) {
-      setError(error.message);
+      throw error;
     }
   };
 
   if (redirect) {
-    // Redirect to homepage after deletion
-    window.location.href = '/'; // Change '/' to your actual homepage route if needed
-    return null; // Prevent further rendering
+    window.location.href = '/'; // Redirect to homepage after deletion
+    return null;
   }
 
   return (
     <div>
       <div>
-        <button onClick={() => window.location.href = '/dashboard'}>Go to Dashboard</button> {/* Button to trigger redirection */}
+        <button onClick={() => window.location.href = '/dashboard'}>Go to Dashboard</button>
       </div>
 
       <div className="profile-page">
@@ -137,7 +134,7 @@ const ProfilePage = () => {
         <input type="password" value={newPassword} onChange={handlePasswordChange} />
         <button onClick={handleUpdatePassword}>Update Password</button>
         <div>
-          <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
+          <button onClick={handleDeleteUser}>Delete User</button>
         </div>
       </div>
     </div>
