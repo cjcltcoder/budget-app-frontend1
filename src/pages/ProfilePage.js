@@ -17,7 +17,7 @@ const ProfilePage = () => {
         if (!token) {
           throw new Error('Authentication failed: Token not found');
         }
-        const response = await axios.get('http://localhost:5000/users/profile', {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -49,7 +49,7 @@ const ProfilePage = () => {
         throw new Error('Please enter a new email');
       }
       const response = await axios.patch(
-        'http://localhost:5000/users/profile',
+        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
         { email: newEmail },
         {
           headers: {
@@ -78,7 +78,7 @@ const ProfilePage = () => {
         throw new Error('Please enter a new password');
       }
       const response = await axios.patch(
-        'http://localhost:5000/users/profile',
+        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
         { password: newPassword },
         {
           headers: {
@@ -102,7 +102,7 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
-      await axios.delete('http://localhost:5000/users/profile', {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -126,20 +126,20 @@ const ProfilePage = () => {
         <button onClick={() => window.location.href = '/dashboard'}>Go to Dashboard</button> {/* Button to trigger redirection */}
       </div>
 
-        <div className="profile-page">
-          <h2>Profile Page</h2>
-          {error && <p>Error: {error}</p>}
-          {successMessage && <p>{successMessage}</p>}
-          <p>Email: {email}</p>
-          <input type="email" value={newEmail} onChange={handleEmailChange} />
-          <button onClick={handleUpdateEmail}>Update Email</button>
-          <br />
-          <input type="password" value={newPassword} onChange={handlePasswordChange} />
-          <button onClick={handleUpdatePassword}>Update Password</button>
-          <div>
-            <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
-          </div>
+      <div className="profile-page">
+        <h2>Profile Page</h2>
+        {error && <p>Error: {error}</p>}
+        {successMessage && <p>{successMessage}</p>}
+        <p>Email: {email}</p>
+        <input type="email" value={newEmail} onChange={handleEmailChange} />
+        <button onClick={handleUpdateEmail}>Update Email</button>
+        <br />
+        <input type="password" value={newPassword} onChange={handlePasswordChange} />
+        <button onClick={handleUpdatePassword}>Update Password</button>
+        <div>
+          <button onClick={handleDeleteUser}>Delete User</button> {/* Button to delete the user */}
         </div>
+      </div>
     </div>
   );
 };

@@ -166,7 +166,7 @@ function Dashboard() {
   const fetchIncome = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/income/money', {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/income/money`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -187,7 +187,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/income',
+        `${process.env.REACT_APP_BACKEND_URL}/income`,
         {
           monthlyIncome: newIncome,
           userId: userId
@@ -211,7 +211,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `http://localhost:5000/income/${income._id}`, // Include the income ID in the URL
+        `${process.env.REACT_APP_BACKEND_URL}/income/${income._id}`, // Include the income ID in the URL
         {
           monthlyIncome: updatedIncome,
           userId: userId
@@ -234,7 +234,7 @@ function Dashboard() {
   const handleDeleteIncome = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete('http://localhost:5000/income', {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/income`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -259,7 +259,7 @@ function Dashboard() {
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/budgets/categories', {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/budgets/categories`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -274,7 +274,7 @@ function Dashboard() {
   const handleAddCategory = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/budgets', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/budgets`, {
         category: newCategory,
         budget: newBudget,
         userId: userId
@@ -295,7 +295,7 @@ function Dashboard() {
   const handleDeleteCategory = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/budgets/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/budgets/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -315,7 +315,7 @@ function Dashboard() {
   const handleUpdateCategory = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`http://localhost:5000/budgets/${selectedCategory._id}`, {
+      const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/budgets/${selectedCategory._id}`, {
         category: updatedCategory,
         budget: updatedBudget,
         userId: userId

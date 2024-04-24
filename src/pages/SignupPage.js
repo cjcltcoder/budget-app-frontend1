@@ -18,7 +18,7 @@ const SignupPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/users', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,27 +45,26 @@ const SignupPage = () => {
   };
 
   return (
-<div className="signup-page">
-  <div className="go-to-home">
-    <button onClick={() => window.location.href = '/'}>Go to Homepage</button>
-  </div>
-  <div className="signup-container">
-    <h2>Signup</h2>
-    {message && <p>{message}</p>}
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="email">Email: </label>
-        <input type="email" id="email" value={email} onChange={handleEmailChange} />
+    <div className="signup-page">
+      <div className="go-to-home">
+        <button onClick={() => window.location.href = '/'}>Go to Homepage</button>
       </div>
-      <div>
-        <label htmlFor="password">Password: </label>
-        <input type="password" id="password" value={password} onChange={handlePasswordChange} />
+      <div className="signup-container">
+        <h2>Signup</h2>
+        {message && <p>{message}</p>}
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email">Email: </label>
+            <input type="email" id="email" value={email} onChange={handleEmailChange} />
+          </div>
+          <div>
+            <label htmlFor="password">Password: </label>
+            <input type="password" id="password" value={password} onChange={handlePasswordChange} />
+          </div>
+          <button type="submit">Sign up</button>
+        </form>
       </div>
-      <button type="submit">Sign up</button>
-    </form>
-  </div>
-</div>
-
+    </div>
   );
 };
 
