@@ -20,13 +20,16 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
+      const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
+      console.log('Fetching user profile from:', url); // Log the URL being used
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       setEmail(response.data.email);
     } catch (error) {
+      console.error('Error fetching user profile:', error); // Log any error that occurs
       setError(error.message);
     }
   };
@@ -81,15 +84,13 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
-      const response = await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/users/profile`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
+      console.log('Updating user profile at:', url); // Log the URL being used
+      const response = await axios.patch(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
       return response;
     } catch (error) {
       throw error;
@@ -102,7 +103,9 @@ const ProfilePage = () => {
       if (!token) {
         throw new Error('Authentication failed: Token not found');
       }
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/users/profile`, {
+      const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
+      console.log('Deleting user profile at:', url); // Log the URL being used
+      await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${token}`
         }
