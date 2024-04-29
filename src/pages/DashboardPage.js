@@ -401,7 +401,7 @@ function Dashboard() {
 
       {/* Doughnut Chart */}
       <div className="chart-container">
-          <h2 className="chart-title">Budget Distribution</h2>
+          <h2 className="chart-title">Budget Categories Percentage from Income</h2>
           <div className="chart-wrapper">
             <Doughnut data={doughnutData} options={chartOptions} />
             <div className="chart-center-text">
@@ -414,7 +414,7 @@ function Dashboard() {
 
         {/* Horizontal Bar Chart */}
         <div className="chart-container">
-            <h2 className="chart-title">Budget Distribution (Bar Chart)</h2>
+            <h2 className="chart-title">Budget Categories by the Dollar</h2>
             <div className="chart-wrapper">
               <Bar data={barChartData} options={chartOptions} />
               <div className="chart-center-text">
