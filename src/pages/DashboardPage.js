@@ -46,7 +46,7 @@ function Dashboard() {
     responsive: true,
     width: 300,
     height: 300,
-    indexAxis: 'y', // Set the axis to be used as the index to 'y' for horizontal bar chart
+    indexAxis: 'y',
     plugins: {
       tooltip: {
         callbacks: {
@@ -55,20 +55,20 @@ function Dashboard() {
             const datasetLabel = context.dataset.label || '';
             const value = context.dataset.data[context.dataIndex];
             if (datasetLabel === 'Budget') {
-              label += `${value}`; // Display budget value
+              label += `${value}`;
             } else {
               const monthlyIncome = income ? income.monthlyIncome : 0;
               const percentage = ((value / monthlyIncome) * 100).toFixed(0);
-              label += `${percentage}% of Income`; // Display percentage of income
+              label += `${percentage}% of Income`;
             }
             return label;
           }
         },
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Set tooltip background color
-        borderColor: '#fff', // Set tooltip border color
-        borderWidth: 1, // Set tooltip border width
-        titleFontColor: '#fff', // Set tooltip title font color
-        bodyFontColor: '#fff', // Set tooltip body font color
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        borderColor: '#fff',
+        borderWidth: 1,
+        titleFontColor: '#fff',
+        bodyFontColor: '#fff',
       }
     },
     labels: {
@@ -78,7 +78,6 @@ function Dashboard() {
       textMargin: 10,
     },
   };
-  
 
   useEffect(() => {
     fetchCategories();
@@ -127,33 +126,29 @@ function Dashboard() {
     const monthlyIncome = income ? income.monthlyIncome : 0;
     const budgetPercentages = categoryBudgets.map(budget => ((budget / monthlyIncome) * 100).toFixed(0));
 
-      // Sort categoryLabels and categoryBudgets based on budget values
-      const sortedData = categoryLabels.map((label, index) => ({
-        label,
-        budget: categoryBudgets[index]
-      })).sort((a, b) => b.budget - a.budget);
+    const sortedData = categoryLabels.map((label, index) => ({
+      label,
+      budget: categoryBudgets[index]
+    })).sort((a, b) => b.budget - a.budget);
 
-      const sortedLabels = sortedData.map(item => item.label);
-      const sortedBudgets = sortedData.map(item => item.budget);
+    const sortedLabels = sortedData.map(item => item.label);
+    const sortedBudgets = sortedData.map(item => item.budget);
 
-    // Modify the bar chart data to be horizontal
     setBarChartData({
       labels: sortedLabels,
       datasets: [
         {
           label: 'Budget',
-          data: sortedBudgets, // Swap data with labels
+          data: sortedBudgets,
           backgroundColor: [
-            'rgba(54, 162, 235, 0.2)', // Color for category 1
-            'rgba(255, 99, 132, 0.2)',  // Color for category 2
-            'rgba(75, 192, 192, 0.2)',  // Color for category 3
-            // Add more colors as needed for additional categories
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
           ],
           borderColor: [
-            'rgba(54, 162, 235, 1)', // Border color for category 1
-            'rgba(255, 99, 132, 1)',  // Border color for category 2
-            'rgba(75, 192, 192, 1)',  // Border color for category 3
-            // Add more colors as needed for additional categories
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(75, 192, 192, 1)',
           ],
           borderWidth: 1,
         },
@@ -162,7 +157,6 @@ function Dashboard() {
 
   };
 
-  // Function to fetch income
   const fetchIncome = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -172,9 +166,9 @@ function Dashboard() {
         }
       });
       if (response.data.length > 0) {
-        setIncome(response.data[0]); // Set income state with fetched data
+        setIncome(response.data[0]);
       } else {
-        setIncome(null); // If no income data found, set income state to null
+        setIncome(null);
       }
     } catch (error) {
       console.error('Error fetching income:', error);
@@ -182,7 +176,6 @@ function Dashboard() {
     }
   };
 
-  // Function to add new income
   const handleAddIncome = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -198,20 +191,19 @@ function Dashboard() {
           }
         }
       );
-      fetchIncome(); // Fetch income again after adding new income
-      setNewIncome(''); // Clear the input field after adding income
+      fetchIncome();
+      setNewIncome('');
     } catch (error) {
       console.error('Error adding income:', error);
       setError('Failed to add income');
     }
   };
 
-  // Function to update income
   const handleUpdateIncome = async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/income/${income._id}`, // Include the income ID in the URL
+        `${process.env.REACT_APP_BACKEND_URL}/income/${income._id}`,
         {
           monthlyIncome: updatedIncome,
           userId: userId
@@ -222,15 +214,14 @@ function Dashboard() {
           }
         }
       );
-      setIncome(response.data); // Set income state with updated data
-      setUpdatedIncome(''); // Clear the input field after updating income
+      setIncome(response.data);
+      setUpdatedIncome('');
     } catch (error) {
       console.error('Error updating income:', error);
       setError('Failed to update income');
     }
   };
 
-  // Function to delete income
   const handleDeleteIncome = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -239,7 +230,7 @@ function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       });
-      setIncome(null); // Set income state to null after deletion
+      setIncome(null);
     } catch (error) {
       console.error('Error deleting income:', error);
       setError('Failed to delete income');
@@ -342,7 +333,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    window.location.href = '/'; // Redirect to HomePage
+    window.location.href = '/';
   };
 
   return (
@@ -352,78 +343,73 @@ function Dashboard() {
         <button onClick={handleLogout}>Logout</button>
       </div>
 
-      <h1 className="title">Budget Management</h1> {/* New h1 title */}
+      <h1 className="title">Budget Management</h1>
       <div className="container">
-  {/* Income Section */}
-  <div className="section">
-    <h2>Income</h2>
-    <ul>
-      {income && (
-        <li key={income._id}> 
-          Monthly Income: {income.monthlyIncome} {' '}
-          <button onClick={handleDeleteIncome}>Delete</button>
-        </li>
-      )}
-    </ul>
-    <h2>Add New Income</h2>
-    <input type="number" value={newIncome} onChange={e => setNewIncome(e.target.value)} placeholder="Monthly Income" />
-    <button onClick={handleAddIncome}>Add Income</button>
-  </div>
-
-  {/* Budget Categories Section */}
-  <div className="section">
-    <h2>Budget Categories</h2>
-    {/* {error && <p>Error: {error}</p>} */}
-    <ul>
-      {categories.map(category => (
-        <li key={category._id}>
-          {category.category}: {category.budget} {' '}
-          <button onClick={() => handleModifyCategory(category)}>Modify</button>
-          <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
-        </li>
-      ))}
-    </ul>
-    <h2>Add New Category</h2>
-    <input type="text" value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Category Name" />
-    <input type="number" value={newBudget} onChange={e => setNewBudget(e.target.value)} placeholder="Budget Amount" />
-    <button onClick={handleAddCategory}>Add Category</button>
-
-    {selectedCategory && (
-      <div>
-        <h2>Update Category</h2>
-        <input type="text" value={updatedCategory} onChange={e => setUpdatedCategory(e.target.value)} placeholder="Category Name" />
-        <input type="number" value={updatedBudget} onChange={e => setUpdatedBudget(e.target.value)} placeholder="Budget Amount" />
-        <button onClick={handleUpdateCategory}>Update Category</button>
-      </div>
-    )}
-  </div>
-</div>
-
-      {/* Doughnut Chart */}
-      <div className="chart-container">
-          <h2 className="chart-title">Budget Categories Percentage from Income</h2>
-          <div className="chart-wrapper">
-            <Doughnut data={doughnutData} options={chartOptions} />
-            <div className="chart-center-text">
-              <span style={{ fontSize: '20px', color: income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0 ? 'red' : 'inherit' }}>
-                {income ? `Remaining\nIncome: ${income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0)}` : 'Remaining\nIncome: 0'}
-              </span>
-            </div>
-          </div>
-      </div>
-
-        {/* Horizontal Bar Chart */}
-        <div className="chart-container">
-            <h2 className="chart-title">Budget Categories by the Dollar</h2>
-            <div className="chart-wrapper">
-              <Bar data={barChartData} options={chartOptions} />
-              <div className="chart-center-text">
-                <span className="chart-remaining-income">
-                  {/* Content to be displayed */}
-                </span>
-              </div>
-            </div>
+        <div className="section">
+          <h2>Income</h2>
+          <ul>
+            {income && (
+              <li key={income._id}>
+                Monthly Income: {income.monthlyIncome}
+                <button onClick={handleDeleteIncome}>Delete</button>
+              </li>
+            )}
+          </ul>
+          <h2>Add New Income</h2>
+          <input type="number" value={newIncome} onChange={e => setNewIncome(e.target.value)} placeholder="Monthly Income" />
+          <button onClick={handleAddIncome}>Add Income</button>
         </div>
+
+        <div className="section">
+          <h2>Budget Categories</h2>
+          <ul>
+            {categories.map(category => (
+              <li key={category._id}>
+                {category.category}: {category.budget}
+                <button onClick={() => handleModifyCategory(category)}>Modify</button>
+                <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+          <h2>Add New Category</h2>
+          <input type="text" value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Category Name" />
+          <input type="number" value={newBudget} onChange={e => setNewBudget(e.target.value)} placeholder="Budget Amount" />
+          <button onClick={handleAddCategory}>Add Category</button>
+
+          {selectedCategory && (
+            <div>
+              <h2>Update Category</h2>
+              <input type="text" value={updatedCategory} onChange={e => setUpdatedCategory(e.target.value)} placeholder="Category Name" />
+              <input type="number" value={updatedBudget} onChange={e => setUpdatedBudget(e.target.value)} placeholder="Budget Amount" />
+              <button onClick={handleUpdateCategory}>Update Category</button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="chart-container">
+        <h2 className="chart-title">Budget Categories Percentage from Income</h2>
+        <div className="chart-wrapper">
+          <Doughnut data={doughnutData} options={chartOptions} />
+          <div className="chart-center-text">
+            <span style={{ fontSize: '20px', color: income && income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0) < 0 ? 'red' : 'inherit' }}>
+              {income ? `Remaining\nIncome: ${income.monthlyIncome - categories.reduce((acc, curr) => acc + curr.budget, 0)}` : 'Remaining\nIncome: 0'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="chart-container">
+        <h2 className="chart-title">Budget Categories by the Dollar</h2>
+        <div className="chart-wrapper">
+          <Bar data={barChartData} options={chartOptions} />
+          <div className="chart-center-text">
+            <span className="chart-remaining-income">
+              {/* Content to be displayed */}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
