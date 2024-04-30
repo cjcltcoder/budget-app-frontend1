@@ -160,7 +160,7 @@ function Dashboard() {
   const fetchIncome = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/income/money`, {
+      const response = await axios.get(`https://budget-app-backend1.onrender.com/income/money`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -180,7 +180,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/income`,
+        `https://budget-app-backend1.onrender.com/income`,
         {
           monthlyIncome: newIncome,
           userId: userId
@@ -203,7 +203,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/income/${income._id}`,
+        `https://budget-app-backend1.onrender.com/${income._id}`,
         {
           monthlyIncome: updatedIncome,
           userId: userId
@@ -225,7 +225,7 @@ function Dashboard() {
   const handleDeleteIncome = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/income`, {
+      await axios.delete(`https://budget-app-backend1.onrender.com/income`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -250,7 +250,7 @@ function Dashboard() {
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/budgets/categories`, {
+      const response = await axios.get(`https://budget-app-backend1.onrender.com/budgets/categories`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -265,7 +265,7 @@ function Dashboard() {
   const handleAddCategory = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/budgets`, {
+      const response = await axios.post(`https://budget-app-backend1.onrender.com/budgets`, {
         category: newCategory,
         budget: newBudget,
         userId: userId
@@ -286,7 +286,7 @@ function Dashboard() {
   const handleDeleteCategory = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/budgets/${id}`, {
+      await axios.delete(`https://budget-app-backend1.onrender.com/budgets/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -306,7 +306,7 @@ function Dashboard() {
   const handleUpdateCategory = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/budgets/${selectedCategory._id}`, {
+      const response = await axios.put(`https://budget-app-backend1.onrender.com/budgets/${selectedCategory._id}`, {
         category: updatedCategory,
         budget: updatedBudget,
         userId: userId

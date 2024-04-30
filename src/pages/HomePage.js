@@ -19,7 +19,7 @@ const HomePage = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
+      const response = await fetch(`https://budget-app-backend1.onrender.com/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
