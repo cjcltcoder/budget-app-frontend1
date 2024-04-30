@@ -18,7 +18,7 @@ const SignupPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`https://budget-app-backend1.onrender.com/users`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
