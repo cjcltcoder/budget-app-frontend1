@@ -6,6 +6,7 @@ import '../Chart.css';
 
 function Dashboard() {
   const [categories, setCategories] = useState([]);
+  const [newTag, setNewTag] = useState('');
   const [income, setIncome] = useState(null);
   const [newCategory, setNewCategory] = useState('');
   const [newBudget, setNewBudget] = useState('');
@@ -157,6 +158,67 @@ function Dashboard() {
 
   };
 
+  const [stackedBarChartData, setStackedBarChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    updateStackedBarChartData();
+  }, [categories]);
+
+const updateStackedBarChartData = () => {
+  if (categories.length === 0) {
+    // Categories data is not available yet, so we skip updating the chart data
+    return;
+  }
+
+  const categoryLabels = categories.map((category) => category.category);
+  const categoryBudgets = categories.map((category) => category.budget);
+  const categoryTags = categories.map((category) => category.tags);
+
+  // Extract unique tags
+  const uniqueTags = Array.from(new Set(categoryTags.flat()));
+
+  // Initialize data structure for each category
+  const categoryData = categoryLabels.map(() => ({
+    label: '',
+    data: Array(uniqueTags.length).fill(0),
+    backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.2)`,
+    borderColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`,
+    borderWidth: 1,
+  }));
+
+  // Populate data for each category
+  categories.forEach((category, categoryIndex) => {
+    categoryData[categoryIndex].label = category.category;
+    category.tags.forEach((tag) => {
+      const tagIndex = uniqueTags.indexOf(tag);
+      // Accumulate budget amounts for each tag
+      categoryData[categoryIndex].data[tagIndex] += categoryBudgets[categoryIndex];
+    });
+  });
+
+  // Aggregate budget amounts for the same tags
+  const aggregatedData = Array(uniqueTags.length).fill(0);
+  categoryData.forEach((category) => {
+    category.data.forEach((budget, index) => {
+      aggregatedData[index] += budget;
+    });
+  });
+
+  setStackedBarChartData({
+    labels: uniqueTags,
+    datasets: [{
+      label: 'Total Budget',
+      data: aggregatedData,
+      backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.2)`,
+      borderColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`,
+      borderWidth: 1,
+    }],
+  });
+};
+
   const fetchIncome = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -255,7 +317,7 @@ function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       });
-      setCategories(response.data);
+      setCategories(response.data); // Assuming the backend sends categories with tags included
     } catch (error) {
       console.error('Error fetching categories:', error);
       setError('Failed to fetch categories');
@@ -274,7 +336,8 @@ function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       });
-      setCategories([...categories, response.data]);
+      const updatedCategories = [...categories, { ...response.data, tags: [] }];
+      setCategories(updatedCategories);
       setNewCategory('');
       setNewBudget('');
     } catch (error) {
@@ -331,6 +394,69 @@ function Dashboard() {
     }
   };
 
+  const handleAddTag = async (category) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/budgets/${category._id}`,
+        {
+          category: category.category,
+          budget: category.budget,
+          userId: userId,
+          newTag: newTag // Send the new tag as a string
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      // Update the categories state with the updated budget item
+      const updatedCategories = categories.map(cat => {
+        if (cat._id === category._id) {
+          return response.data;
+        }
+        return cat;
+      });
+      setCategories(updatedCategories);
+      setNewTag('');
+    } catch (error) {
+      console.error('Error adding tag:', error);
+      setError('Failed to add tag');
+    }
+  };
+  
+  const handleDeleteTag = async (category, tagToDelete) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/budgets/${category._id}`,
+        {
+          category: category.category,
+          budget: category.budget,
+          userId: userId,
+          tagToDelete: tagToDelete // Send the tag to delete as a string
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      // Update the categories state with the updated budget item
+      const updatedCategories = categories.map(cat => {
+        if (cat._id === category._id) {
+          return response.data;
+        }
+        return cat;
+      });
+      setCategories(updatedCategories);
+    } catch (error) {
+      console.error('Error deleting tag:', error);
+      setError('Failed to delete tag');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     window.location.href = '/';
@@ -364,12 +490,33 @@ function Dashboard() {
           <h2>Budget Categories</h2>
           <ul>
             {categories.map(category => (
-              <li key={category._id}>
-                {category.category}: {category.budget}
-                <button onClick={() => handleModifyCategory(category)}>Modify</button>
-                <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
-              </li>
-            ))}
+              <div className="category-item" key={category._id}>
+                <li>
+                  {category.category}: {category.budget}
+                  <button onClick={() => handleModifyCategory(category)}>Modify</button>
+                  <button onClick={() => handleDeleteCategory(category._id)}>Delete</button>
+                  <div>
+                    Tag:{' '}
+                    {category.tags.map(tag => (
+                      <span key={tag}>
+                        {tag} <button onClick={() => handleDeleteTag(category, tag)}>Delete Tag</button>
+                      </span>
+                    ))}
+                    {category.tags.length === 0 && (
+                      <div>
+                        <input
+                          type="text"
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                          placeholder="New Tag"
+                        />
+                        <button onClick={() => handleAddTag(category)}>Add Tag</button>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              </div>
+          ))}
           </ul>
           <h2>Add New Category</h2>
           <input type="text" value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Category Name" />
@@ -400,9 +547,22 @@ function Dashboard() {
       </div>
 
       <div className="chart-container">
-        <h2 className="chart-title">Budget Categories by the Dollar</h2>
+  <h2 className="chart-title">Budget Categories by the Dollar</h2>
+  <div className="chart-wrapper">
+    <Bar data={barChartData} options={{ ...chartOptions, indexAxis: 'x' }} />
+    <div className="chart-center-text">
+      <span className="chart-remaining-income">
+        {/* Content to be displayed */}
+      </span>
+    </div>
+  </div>
+</div>
+
+            {/* New Stacked Bar Chart */}
+      <div className="chart-container">
+        <h2 className="chart-title">Budget Categories by Tags</h2>
         <div className="chart-wrapper">
-          <Bar data={barChartData} options={chartOptions} />
+          <Bar data={stackedBarChartData} options={chartOptions} />
           <div className="chart-center-text">
             <span className="chart-remaining-income">
               {/* Content to be displayed */}
@@ -411,6 +571,7 @@ function Dashboard() {
         </div>
       </div>
     </div>
+    
   );
 }
 
