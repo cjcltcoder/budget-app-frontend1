@@ -35,7 +35,7 @@ const HomePage = () => {
         navigate('/dashboard');
       } else {
         console.error('Login failed:', data.message);
-        setErrorMessage('Email or password invalid'); // Set error message
+        setErrorMessage('Email or password invalid');
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -56,7 +56,7 @@ const HomePage = () => {
             <input type="password" id="password" value={password} onChange={handlePasswordChange} />
           </div>
           <button type="submit">Login</button>
-          {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Display error message */}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
         </form>
         <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
       </div>

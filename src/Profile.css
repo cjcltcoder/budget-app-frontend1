@@ -1,23 +1,23 @@
 .profile-page {
-    border: 1px solid #ccc; /* Add border */
-    width: 50%; /* Adjust width as needed */
-    margin: 20px auto; /* Center horizontally and add space around */
-    padding: 20px; /* Add padding for spacing */
-    text-align: center; /* Center text */
+    border: 1px solid #ccc; 
+    width: 50%; 
+    margin: 20px auto; 
+    padding: 20px; 
+    text-align: center; 
   }
   
   .profile-page h2 {
-    margin-bottom: 10px; /* Add space below heading */
+    margin-bottom: 10px; 
   }
   
   .profile-page p {
-    margin-bottom: 10px; /* Add space below paragraphs */
+    margin-bottom: 10px; 
   }
   
   .profile-page input {
-    margin-bottom: 10px; /* Add space below inputs */
+    margin-bottom: 10px; 
   }
   
   .profile-page button {
-    margin-top: 10px; /* Add space above buttons */
+    margin-top: 10px; 
   }

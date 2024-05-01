@@ -21,7 +21,7 @@ const ProfilePage = () => {
         throw new Error('Authentication failed: Token not found');
       }
       const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
-      console.log('Fetching user profile from:', url); // Log the URL being used
+      console.log('Fetching user profile from:', url);
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -29,7 +29,7 @@ const ProfilePage = () => {
       });
       setEmail(response.data.email);
     } catch (error) {
-      console.error('Error fetching user profile:', error); // Log any error that occurs
+      console.error('Error fetching user profile:', error);
       setError(error.message);
     }
   };
@@ -85,7 +85,7 @@ const ProfilePage = () => {
         throw new Error('Authentication failed: Token not found');
       }
       const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
-      console.log('Updating user profile at:', url); // Log the URL being used
+      console.log('Updating user profile at:', url);
       const response = await axios.patch(url, data, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -104,7 +104,7 @@ const ProfilePage = () => {
         throw new Error('Authentication failed: Token not found');
       }
       const url = `${process.env.REACT_APP_BACKEND_URL}/users/profile`;
-      console.log('Deleting user profile at:', url); // Log the URL being used
+      console.log('Deleting user profile at:', url); 
       await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${token}`

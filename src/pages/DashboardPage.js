@@ -169,7 +169,7 @@ function Dashboard() {
 
 const updateStackedBarChartData = () => {
   if (categories.length === 0) {
-    // Categories data is not available yet, so we skip updating the chart data
+    // Skip chart data if categories is not available yet
     return;
   }
 
@@ -199,7 +199,7 @@ const updateStackedBarChartData = () => {
     });
   });
 
-  // Aggregate budget amounts for the same tags
+  // Sum up budget amounts for the same tags
   const aggregatedData = Array(uniqueTags.length).fill(0);
   categoryData.forEach((category) => {
     category.data.forEach((budget, index) => {
@@ -317,7 +317,7 @@ const updateStackedBarChartData = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setCategories(response.data); // Assuming the backend sends categories with tags included
+      setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
       setError('Failed to fetch categories');
@@ -403,7 +403,7 @@ const updateStackedBarChartData = () => {
           category: category.category,
           budget: category.budget,
           userId: userId,
-          newTag: newTag // Send the new tag as a string
+          newTag: newTag
         },
         {
           headers: {
@@ -411,7 +411,7 @@ const updateStackedBarChartData = () => {
           }
         }
       );
-      // Update the categories state with the updated budget item
+      // This updates categories state with updated budget items
       const updatedCategories = categories.map(cat => {
         if (cat._id === category._id) {
           return response.data;
@@ -435,7 +435,7 @@ const updateStackedBarChartData = () => {
           category: category.category,
           budget: category.budget,
           userId: userId,
-          tagToDelete: tagToDelete // Send the tag to delete as a string
+          tagToDelete: tagToDelete
         },
         {
           headers: {
@@ -443,7 +443,7 @@ const updateStackedBarChartData = () => {
           }
         }
       );
-      // Update the categories state with the updated budget item
+      // Same update categories state with updated budget items
       const updatedCategories = categories.map(cat => {
         if (cat._id === category._id) {
           return response.data;
@@ -552,20 +552,19 @@ const updateStackedBarChartData = () => {
     <Bar data={barChartData} options={{ ...chartOptions, indexAxis: 'x' }} />
     <div className="chart-center-text">
       <span className="chart-remaining-income">
-        {/* Content to be displayed */}
       </span>
     </div>
   </div>
 </div>
 
-            {/* New Stacked Bar Chart */}
+         
       <div className="chart-container">
         <h2 className="chart-title">Budget Categories by Tags</h2>
         <div className="chart-wrapper">
           <Bar data={stackedBarChartData} options={chartOptions} />
           <div className="chart-center-text">
             <span className="chart-remaining-income">
-              {/* Content to be displayed */}
+          
             </span>
           </div>
         </div>

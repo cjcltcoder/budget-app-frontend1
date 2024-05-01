@@ -35,12 +35,12 @@ const SignupPage = () => {
       } else {
         console.error('Failed to sign up user:', response.statusText);
         setMessage('Failed to add user');
-        // Handle error (display error message, etc.)
+  
       }
     } catch (error) {
       console.error('Error signing up user:', error.message);
       setMessage('Error adding user');
-      // Handle error (display error message, etc.)
+  
     }
   };
 
